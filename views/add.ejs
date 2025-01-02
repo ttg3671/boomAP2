@@ -1,0 +1,998 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/add.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 text-center add_div1">
+		        	<h2>Add Post</h2>
+		        </div>
+
+		        <div class="col-12 col-sm-12 mt-3 border-0 add_div2">
+		        	<form 
+		        		action="/v1<% if(editing) { %>/view/<%= sid %><% } else { %>/add<% } %>"
+		        		method="POST" 
+		        		id="searchForm" 
+		        		onkeydown="return event.key != 'Enter';"
+		        	>
+			        	<div class="add_div3 border">
+			        		<div class="col-12 col-lg-8 p-3"> 
+			        			<!-- title -->
+			        			<div class="mb-3">
+								  	<label for="exampleFormControlInput1" class="form-label">Title</label>
+								  	<input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="e.g., title1" value="<%= oldInput.title %>">
+								  	<button type="button" class="btn" id="titleBtn">
+								  		<i class="fa-solid fa-language" style="color: black;"></i>
+								  	</button>
+								</div>
+
+								<div class="mb-3">
+								  	<label for="exampleFormControlInputTranslate1" class="form-label">Title Translate</label>
+								  	<input type="text" class="form-control" name="tt" id="exampleFormControlInputTranslate1" placeholder="e.g., Título 1" value="<%= oldInput.tt %>">
+								</div>
+
+								<!-- description -->
+								<div class="mb-3">
+								  	<label for="exampleFormControlTextarea1" class="form-label">Description</label>
+								  	<textarea class="form-control" name="des" id="exampleFormControlTextarea1" rows="5">
+								  		<%= oldInput.des %>
+								  	</textarea>
+								  	<button type="button" class="btn" id="descpBtn">
+								  		<i class="fa-solid fa-language" style="color: black;"></i>
+								  	</button>
+								</div>
+
+								<div class="mb-3">
+								  	<label for="exampleFormControlTextareaTranslate1" class="form-label">Description Translate</label>
+								  	<textarea class="form-control" name="dt" id="exampleFormControlTextareaTranslate1" rows="5">
+                      <%= oldInput.dt %>
+								  	</textarea>
+								</div>
+                  
+                <div class="mb-3">
+								  	<label for="exampleFormControlTextarea2" class="form-label">Social Media Handles</label>
+								  	<textarea class="form-control" name="sm" id="exampleFormControlTextarea2" rows="5">
+                      <%= oldInput.sm %>
+								  	</textarea>
+								</div>
+
+								<!-- image -->
+								<div class="mb-3" id="logo_div">
+				                    <div style="display: none;">
+				                        <label for="formFile1" class="form-label">Landscape Image</label>
+				                        <div>
+				                        	<img src="" class="img-thumbnail" alt="..." width="300" height="300" id="logoImg" loading="lazy">
+				                        </div>
+				                    </div>
+				                    <div>
+				                        <label for="formFile" class="form-label">Landscape Image</label>
+				                        <input class="form-control" type="file" id="formFilel" accept="image/*">
+				                        <input type="hidden" name="logo" id="formNameFilel" value="<%= oldInput.logo %>">
+				                    </div>
+				                    <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-between">
+				                        <button type="button" class="btn upload-limage-btn border-0">
+				                            <i class="fa-solid fa-cloud-arrow-up"></i>
+				                        </button>
+					                        <button type="button" class="btn delete-l-button">
+				                                <i class="fa-solid fa-trash" style="color: red;"></i>
+				                            </button>
+				                        <div id="spinner_subl" class="spinner-border" role="status" style="display: none;">
+				                            <span class="sr-only">Loading...</span>
+				                        </div>
+				                    </div>
+				                </div>
+
+				                <!-- portrait image -->
+								<div class="mb-3" id="portrait_div">
+				                    <div style="display: none;">
+				                        <label for="formFile1" class="form-label">Portrait Image</label>
+				                        <div>
+				                        	<img src="" class="img-thumbnail" alt="..." width="300" height="300" id="portImg" loading="lazy">
+				                        </div>
+				                    </div>
+				                    <div>
+				                        <label for="formFile" class="form-label">Portrait Image</label>
+				                        <input class="form-control" type="file" id="formFileP" accept="image/*">
+				                        <input type="hidden" name="portrait_image" id="formNameFileP" value="<%= oldInput.portrait_image %>">
+				                    </div>
+				                    <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-between">
+				                        <button type="button" class="btn upload-Pimage-btn border-0">
+				                            <i class="fa-solid fa-cloud-arrow-up"></i>
+				                        </button>
+					                        <button type="button" class="btn delete-P-button">
+				                                <i class="fa-solid fa-trash" style="color: red;"></i>
+				                            </button>
+				                        <div id="spinner_subP" class="spinner-border" role="status" style="display: none;">
+				                            <span class="sr-only">Loading...</span>
+				                        </div>
+				                    </div>
+				                </div>
+
+				                <!-- video -->
+				                <div class="mb-3" id="v_div">
+				                	<div class="col-12">
+				                		<label for="" class="form-label">Video</label>
+				                	</div>
+					                <div class="col-12 col-sm-6 col-md-8 col-lg-5 border text-sm-center p-0" id="embed-responsive" style="display: none;">
+					                    <div class="embed-responsive embed-responsive-16by9">
+					                      	<video src="" class="videoDiv object-fit-contain" controls muted autoplay></video>
+					                    </div>
+				                	</div>
+					                <div class="col-12 col-sm-6 col-md-8 col-lg-5 video-uploader" id="video-uploader">
+					                    <label class="file-label" for="movieFile" id="fileLabel">
+					                      <i class="fa-solid fa-file-video"></i> Choose Video
+					                    </label>
+					                    <input type="file" id="movieFile" class="file-input" accept="video/*" />
+					                    <input type="hidden" class="border-0" id="episode_Id" value="">
+					                    <input type="hidden" id="fileCode" name="fileCode" class="custom-file-input" value="<%= oldInput.fileCode %>">
+					                    <span id="file_name" name="file_name" class="file-name">No file chosen</span>
+					                </div>
+					                <div class="col-12 col-sm-6 col-md-4 col-lg-5 text-start d-flex justify-content-between align-items-center" style="word-wrap: break-word;">
+					                    <p class="text-break"></p>
+					                </div>
+					                <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex justify-content-between">
+					                    <div id="spinner" class="spinner-border" role="status" style="display: none;">
+					                      <span class="sr-only">Loading...</span>
+					                    </div>
+					                    <button type="button" class="btn upload-button border-0">
+					                      <i class="fa-solid fa-cloud-arrow-up"></i>
+					                    </button>
+						                    <button type="button" class="btn delete-button">
+				                              <i class="fa-solid fa-trash" style="color: red;"></i>
+				                            </button>
+					                    <!-- Subtitle Button -->
+					                    <button type="button" class="btn subtitle-button border-0 d-none" data-tvshow-id="">
+					                      <i class="fa-solid fa-closed-captioning"></i>
+					                    </button>
+					                </div>
+				                </div>
+
+				                <div id="progress-container" style="display: none;">
+								  <label for="upload-progress">Upload Progress:</label>
+								  <progress id="upload-progress" value="0" max="100"></progress>
+								  <span id="progress-text">0%</span>
+								</div>
+			        		</div>
+
+			        		<div class="col-12 col-lg-4 p-3"> 
+				                <!-- link -->
+				                <div class="mb-3">
+				                	<label for="homepage" class="form-label">Link</label>
+                            <input 
+                              type="url" 
+                              id="homepage" 
+                              class="form-control" 
+                              name="link" 
+                              placeholder="e.g., www.google.com"
+                              value="<%= oldInput.link %>"
+                            >
+				                </div>
+
+				                <!-- category -->
+				                <div class="mb-4">
+					                <% if(category != '') { %>
+					                	<label class="form-label">Categories</label>
+					                	<div class="tag_div"></div>
+                      <button 
+                        type="button" 
+                        class="btn btn-outline-success cat_btn"
+                      >
+                        + Add New Category
+                      </button>
+                      <div class="mt-2 mb-3 lower_cat_div" style="display: none;">
+                          <input type="text" class="form-control" id="exampleInputcat" placeholder="enter new category">
+                        <button
+                          type="button" 
+                          class="btn btn-outline-primary add_cat_btn mt-3"
+                        > 
+                          Add New Category
+                        </button>
+                      </div>
+									<% } %>
+								</div>
+                            
+                <!-- date -->
+<!--                 <div class="mb-4">
+                  <label for="exampleInputDate1" class="form-label">Date</label>
+                  <input type="date" class="form-control" name="date" id="exampleInputDate1">
+                </div> -->
+
+								<!-- submit btn -->
+								<div class="mb-3 text-center">
+									<button type="submit" class="btn btn-primary" id="subBtn">Submit</button>
+								</div>
+			        		</div>
+			        	</div>
+		        	</form>
+		        </div>
+		    </div>
+		</div>
+	</section>
+
+	<footer></footer>
+
+	<script>
+		// let oi = '<%= JSON.stringify(oldInput) %>';
+		let oi = '<%= JSON.stringify(oldInput).replace(/\\/g, "\\\\").replace(/"/g, '\\"') %>';
+		let editing = '<%= editing %>';
+		let category = '<%= JSON.stringify(category) %>';
+	</script>
+
+	<script>
+		  window.addEventListener('load', function () {
+	      // console.log("hii...");
+	      // Get the loading spinner element
+	      const loadingSpinner = document.getElementById('loadingSpinner');
+	        
+	      // Hide the loading spinner
+	      loadingSpinner.style.display = 'none';
+	    });
+
+	    globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            const category1 = JSON.parse(category.replace(/&#34;/g, '"'));
+            // const oldInput = JSON.parse(oi.replace(/&#34;/g, '"'));
+            // const oi1 = oi.replace(/&#34;/g, '"').replace(/[\x00-\x1F\x7F]/g, '');
+            // const oldInput = JSON.parse(oi1.replace(/&#34;/g, '"'));
+        
+            const oi1 = oi.replace(/&#34;/g, '"').replace(/[\x00-\x1F\x7F]/g, '');
+            const oldInput = JSON.parse(oi1);
+        
+            // console.log(oldInput);
+
+            let xhr = null;
+
+        function renderCategoryCheckboxes(category) {
+			    // Get the container element where the checkboxes will be rendered
+			    const container = document.querySelector('.tag_div');
+			    
+			    // Clear the container's current content
+			    container.innerHTML = '';
+
+			    // Generate HTML for each category item
+			    const checkboxesHtml = category.map((item, index) => `
+			        <div class="form-check mb-1 ms-3">
+			            <input class="form-check-input tag_input" type="checkbox" name="tags" value="${item.id}" id="flexCheckDefault_${index}">
+			            <label class="form-check-label" for="flexCheckDefault_${index}">
+			                ${item.name}
+			            </label>
+			        </div>
+			    `).join('');
+
+			    // Insert the generated HTML into the container
+			    container.innerHTML = checkboxesHtml;
+
+			    const tagInput = document.querySelectorAll('.tag_input');
+
+					tagInput.forEach(i => {
+						if (oldInput.tags.includes(i.value)) {
+					    	i.checked = true;
+						}
+					})
+			  }
+
+			  if (category1 != '') {
+					renderCategoryCheckboxes(category1);
+				}
+
+            const form = globalThis.document.getElementById('searchForm');
+			      const submitButton = globalThis.document.getElementById('subBtn');
+            const spinner = document.getElementById('spinner-border');
+
+            const catBtn = document.querySelector('.cat_btn');
+            const addCatBtn = document.querySelector('.add_cat_btn');
+
+            const lowerCatDiv = document.querySelector('.lower_cat_div');
+
+            const logoDiv = globalThis.document.getElementById('logo_div');
+
+            const portraitDiv = globalThis.document.getElementById('portrait_div');
+
+            const videoDiv = globalThis.document.getElementById('v_div');
+            const vu1 = globalThis.document.getElementById('video-uploader');
+            const er1 = globalThis.document.getElementById('embed-responsive');
+
+            //console.log(tagInput, oldInput.tags);
+
+            const descriptionContainer1 = document.getElementById('exampleFormControlTextarea1');
+
+        	let descriptionLines1 = descriptionContainer1.textContent.trim();
+			    // console.log(descriptionLines1);
+			    descriptionContainer1.textContent = descriptionLines1;
+
+			const iconBtn1 = globalThis.document.getElementById('titleBtn');
+
+			const iconBtn2 = globalThis.document.getElementById('descpBtn');
+
+			iconBtn1.addEventListener("click", (e) => {
+				let value1 = globalThis.document.getElementById("exampleFormControlInput1").value;
+				// console.log(value1, value1 == '');
+
+				if (value1.trim() == '') {
+					alert("Enter Title...");
+				}
+				else {
+					value1 = value1.trim();
+
+					const requestOptions = {
+					  method: "GET",
+					  redirect: "follow"
+					};
+
+					fetch(`https://api.hiphopboombox.com/translate/translate.php?text=${value1}`, requestOptions)
+					  .then((response) => response.text())
+					  .then((result) => {
+					  		// console.log(result);
+					  		globalThis.document.getElementById("exampleFormControlInputTranslate1").value = result;
+					  	})
+					  .catch((error) => console.error(error));
+				}
+			})
+
+			iconBtn2.addEventListener("click", (e) => {
+				let value1 = globalThis.document.getElementById('exampleFormControlTextarea1').value;
+				// console.log(value1, value1 == '');
+
+				if (value1.trim() == '') {
+					alert("Enter Description...");
+				}
+				else {
+					value1 = value1.trim();
+
+					const requestOptions = {
+					  method: "GET",
+					  redirect: "follow"
+					};
+
+					fetch(`https://api.hiphopboombox.com/translate/translate.php?text=${value1}`, requestOptions)
+					  .then((response) => response.text())
+					  .then((result) => {
+					  		// console.log(result);
+					  		globalThis.document.getElementById("exampleFormControlTextareaTranslate1").textContent = result;
+					  })
+					  .catch((error) => console.error(error));
+				}
+			})
+
+            // console.log(vu1, er1);
+
+            catBtn.addEventListener('click', () => {
+            	if (lowerCatDiv.style.display == 'none') {
+            		lowerCatDiv.style.display = 'block';
+            	}
+            	else {
+            		lowerCatDiv.style.display = 'none';
+            	}
+            })
+
+            globalThis.document.querySelectorAll('.upload-button').forEach(button => {
+	          button.addEventListener('click', function(e) {
+	            uploadVideo(this);
+	          });
+	        });
+
+            globalThis.document.querySelectorAll('.upload-limage-btn').forEach(button => {
+	          button.addEventListener('click', function(e) {
+	            uploadLogoImage(this);
+	          });
+	        });
+
+	        globalThis.document.querySelectorAll('.upload-Pimage-btn').forEach(button => {
+	          button.addEventListener('click', function(e) {
+	            uploadPortraitImage(this);
+	          });
+	        });
+
+	        document.addEventListener("change", function (event) {
+	          if (event.target.matches(".file-input")) {
+	            const fileInput = event.target;
+	            const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+
+	            // console.log(fileInput, fileNameDisplay);
+
+	            const file = fileInput.files[0];
+	            // console.log(file);
+	            if (file) {
+	              fileNameDisplay.textContent = file.name;
+	            } else {
+	              fileNameDisplay.textContent = "No file chosen";
+	            }
+	          }
+	        });
+
+	        function uploadVideo1(btn) {
+	        	const videoIframe = document.querySelector("#embed-responsive");
+
+          		const videoTag = videoIframe.querySelector('.videoDiv');
+
+          		videoIframe.style.display = 'block';
+
+          		videoTag.setAttribute('src', "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+
+          		console.log(videoIframe, videoTag);
+	        }
+
+	        function uploadLogoImage(btn) {
+	          	// console.log("logo....");
+		        submitButton.style.display = 'none';
+		        btn.disabled = true;
+
+		        const formFile1 = globalThis.document.getElementById("formFilel");
+
+		        const file = formFile1.files[0];
+
+		        if (formFile1.files.length === 0) {
+		            alert('Please select a image to upload.');
+		            btn.disabled = false;
+		            submitButton.style.display = 'block';
+		            return;
+		        }
+
+		        else if (file) {
+		        	submitButton.style.display = 'block';
+		            // console.log(file.name);
+		            function isVideoExtension(extension) {
+		              const videoExtensions = [".png", ".jpg", ".jpeg", ".webp", ".avif"];
+		              return videoExtensions.includes(extension.toLowerCase());
+		            }
+		            const extension = file.name.match(/\.([^\.]+)$/);
+
+		            if (extension) {
+		              const extractedExtension = extension[1].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+		              const isVideo = isVideoExtension("." + extractedExtension); // Add dot prefix
+		              // console.log(isVideo);
+		              if (!isVideo) {
+		                alert('Please select a image to upload.');
+		                btn.disabled = false;
+		                // const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+		                formFile1.value = "";
+		                return;
+		              }
+		            } else {
+		              console.log("No extension found");
+		            }
+		        }
+
+		        submitButton.style.display = 'none';
+
+		        const spinner = document.getElementById("spinner_subl");
+		        spinner.style.display = 'block';
+
+		        const formdata = new FormData();
+		        formdata.append("fileToUpload", file);
+
+		        const requestOptions = {
+		            method: "POST",
+		            body: formdata,
+		            redirect: "follow"
+		        };
+
+		        fetch("https://api.hiphopboombox.com/api/uploadImage.php", requestOptions)
+		            .then((response) => response.json())
+		            .then((result) => {
+		              // console.log(result);
+		              if (result.isSuccess == true) {
+		                spinner.style.display = 'none';
+		                btn.parentElement.style.display = 'none';
+		                globalThis.document.getElementById("formNameFilel").value = result.image;
+		                btn.parentElement.previousElementSibling.style.display = 'none';
+		                const showDiv = btn.parentElement.previousElementSibling.previousElementSibling;
+
+			        	    const logo_img = showDiv.querySelector("#logoImg");
+
+			        	    logo_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${result.image}`);
+
+			        	    showDiv.style.display = 'block';
+
+		                btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'block';
+		                btn.parentElement.parentElement.style.marginBottom = '50px';
+		                submitButton.style.display = 'block';
+
+		                const formdata2 = new FormData();
+                    formdata2.append("img_url", `https://api.hiphopboombox.com/api/uploads/${result.image}`);
+                    formdata2.append("width", "1200");
+                    formdata2.append("height", "630");
+
+                    const requestOptions = {
+                      method: "POST",
+                      body: formdata2,
+                      redirect: "follow"
+                    };
+
+                    fetch("https://api.hiphopboombox.com/api/ufi.php", requestOptions)
+                      .then((response) => response.json())
+                      .then((result) => {
+                        //console.log(result);
+                        spinner.style.display = 'none';
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                        return;
+                      });
+		              }
+              
+		              else {
+		                alert(result.errorMsg);
+		                btn.disabled = false;
+		                file.value = '';
+		                spinner.style.display = 'none';
+		                return;
+		              }
+		            })
+		            .catch((error) => console.error(error));
+        	}
+
+        	function uploadPortraitImage(btn) {
+	          	// console.log("portrait....");
+		        submitButton.style.display = 'none';
+		        btn.disabled = true;
+
+		        const formFile1 = globalThis.document.getElementById("formFileP");
+
+		        const file = formFile1.files[0];
+
+		        if (formFile1.files.length === 0) {
+		            alert('Please select a image to upload.');
+		            btn.disabled = false;
+		            submitButton.style.display = 'block';
+		            return;
+		        }
+
+		        else if (file) {
+		        	submitButton.style.display = 'block';
+		            // console.log(file.name);
+		            function isVideoExtension(extension) {
+		              const videoExtensions = [".png", ".jpg", ".jpeg", ".webp", ".avif"];
+		              return videoExtensions.includes(extension.toLowerCase());
+		            }
+		            const extension = file.name.match(/\.([^\.]+)$/);
+
+		            if (extension) {
+		              const extractedExtension = extension[1].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+		              const isVideo = isVideoExtension("." + extractedExtension); // Add dot prefix
+		              // console.log(isVideo);
+		              if (!isVideo) {
+		                alert('Please select a image to upload.');
+		                btn.disabled = false;
+		                // const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+		                formFile1.value = "";
+		                return;
+		              }
+		            } else {
+		              console.log("No extension found");
+		            }
+		        }
+
+		        submitButton.style.display = 'none';
+
+		        const spinner = document.getElementById("spinner_subP");
+		        spinner.style.display = 'block';
+
+		        const formdata = new FormData();
+		        formdata.append("fileToUpload", file);
+
+		        const requestOptions = {
+		            method: "POST",
+		            body: formdata,
+		            redirect: "follow"
+		        };
+
+		        fetch("https://api.hiphopboombox.com/api/uploadImage.php", requestOptions)
+		            .then((response) => response.json())
+		            .then((result) => {
+		              // console.log(result);
+		              if (result.isSuccess == true) {
+		                spinner.style.display = 'none';
+		                btn.parentElement.style.display = 'none';
+		                globalThis.document.getElementById("formNameFileP").value = result.image;
+		                btn.parentElement.previousElementSibling.style.display = 'none';
+		                const showDiv = btn.parentElement.previousElementSibling.previousElementSibling;
+
+			        	const port_img = showDiv.querySelector("#portImg");
+
+			        	port_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${result.image}`);
+
+			        	showDiv.style.display = 'block';
+
+		                btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'block';
+		                btn.parentElement.parentElement.style.marginBottom = '50px';
+		                submitButton.style.display = 'block';
+		              }
+		              else {
+		                alert(result.errorMsg);
+		                btn.disabled = false;
+		                file.value = '';
+		                spinner.style.display = 'none';
+		                return;
+		              }
+		            })
+		            .catch((error) => console.error(error));
+        	}
+
+        	function uploadVideo(btn) {
+          		submitButton.style.display = 'none';
+          		btn.disabled = true;
+
+          		const videoIframe = document.querySelector("#embed-responsive");
+          		const fileInput = document.querySelector("#movieFile");
+          		const videoUploader = document.querySelector("#video-uploader");
+          		const progressContainer = document.getElementById('progress-container');
+  				    const progressBar = document.getElementById('upload-progress');
+  				    const progressText = document.getElementById('progress-text');
+
+          		// console.log(videoIframe);
+
+          		videoIframe.style.display = "none"; 
+
+          		const file = fileInput.files[0];
+          		// console.log(file);             
+
+		        if (fileInput.files.length === 0) {
+		            alert('Please select a video to upload.');
+		            btn.disabled = false;
+		            submitButton.style.display = 'block';
+		            return;
+		        }
+
+		        else if (file) {
+		        	submitButton.style.display = 'block';
+		            // console.log(file.name);
+		            function isVideoExtension(extension) {
+		              const videoExtensions = [".mp4", ".avi", ".wmv", ".mov", ".mkv", ".flv", ".webm", ".3gp", ".ogv", ".mpeg", ".mpg", ".divx", ".vob"];
+		              return videoExtensions.includes(extension.toLowerCase());
+		            }
+		            const extension = file.name.match(/\.([^\.]+)$/);
+
+		            if (extension) {
+		              const extractedExtension = extension[1].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+		              const isVideo = isVideoExtension("." + extractedExtension); // Add dot prefix
+		              // console.log(isVideo);
+		              if (!isVideo) {
+		                alert('Please select a video to upload.');
+		                btn.disabled = false;
+		                const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+		                fileNameDisplay.textContent = "No file chosen";
+		                return;
+		              }
+		            } else {
+		              console.log("No extension found");
+		            }
+		        }
+
+		        submitButton.style.display = 'none';
+
+		        const fCode = document.getElementById("fileCode");
+
+		        const spinner = document.getElementById("spinner");
+		        spinner.style.display = 'block';
+
+		        const formdata = new FormData();
+		        formdata.append("video", file);
+
+		        xhr = new XMLHttpRequest();
+
+		        xhr.upload.addEventListener('progress', function(event) {
+				    if (event.lengthComputable) {
+				      const percentComplete = Math.round((event.loaded / event.total) * 100);
+				      progressBar.value = percentComplete;
+				      progressText.textContent = `${percentComplete}%`;
+				      progressContainer.style.display = 'block';
+				    }
+				});
+
+				xhr.addEventListener('load', function() {
+				    progressContainer.style.display = 'none';
+				    if (xhr.status === 200) {
+              // console.log(xhr.responseText);
+				      const result = JSON.parse(xhr.responseText);
+				      if (result.isSuccess) {
+				        const filecode = result.video;
+				        fCode.value = filecode;
+
+				        spinner.style.display = 'none';
+
+				        if (filecode) {
+				          videoUploader.style.display = 'none';
+				          videoIframe.style.display = "block";
+				          const videoTag = videoIframe.querySelector('.videoDiv');
+				          videoTag.setAttribute('src', `https://api.hiphopboombox.com/api/uploads/${filecode}`);
+				          submitButton.style.display = 'block';
+				          btn.disabled = false;
+				        } else {
+				          alert(`Unable to upload ${file.name}.`);
+				          const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling;
+				          fileNameDisplay.textContent = "No file chosen";
+				          submitButton.style.display = 'none';
+				          spinner.style.display = 'none';
+				          btn.disabled = false;
+				        }
+				      } else {
+				        alert(`Unable to upload ${file.name}.`);
+				        const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling;
+				        fileNameDisplay.textContent = "No file chosen";
+				        btn.disabled = false;
+				        spinner.style.display = 'none';
+				      }
+				    }
+				});
+
+				xhr.addEventListener('error', function() {
+				    alert('An error occurred while uploading the video.');
+				    btn.disabled = false;
+				    spinner.style.display = 'none';
+				});
+
+				xhr.open('POST', 'https://api.hiphopboombox.com/api/uploadVideo.php', true);
+				xhr.send(formdata);
+        	}
+
+        	addCatBtn.addEventListener('click', (e) => {
+        		const tag = document.getElementById("exampleInputcat");
+        		// console.log(tag, tag.value);
+
+        		if (tag.value == '') {
+        			return;
+        		}
+
+        		else {
+	        		const formdata = new FormData();
+		            formdata.append("name", tag.value);
+
+		            const requestOptions = {
+		              method: "POST",
+		              body: formdata,
+		              redirect: "follow"
+		            };
+
+		            fetch("https://api.hiphopboombox.com/api/insert/category.php", requestOptions)
+		              .then((response) => response.json())
+		              .then((result) => {
+		                // console.log(result);
+		                if (result.isSuccess == true) {
+		                  tag.value = '';
+
+			                const requestOptions = {
+			                  method: "GET",
+			                  redirect: "follow"
+			                };
+
+			                fetch("https://api.hiphopboombox.com/api/get/categories.php", requestOptions)
+			                    .then((response) => response.json())
+			                    .then((result) => {
+			                      // console.log(result);
+			                      if (result != '') {
+			                        renderCategoryCheckboxes(result.reverse());
+			                      }
+			                    })
+			                    .catch((error) => console.error(error));
+		                }
+		                else {
+		                  alert("Category not inserted try again...");
+		                }
+		              })
+		              .catch((error) => console.error(error));
+		        }
+	        })
+
+        	if (oldInput.logo !== '') {
+        		// logoDiv.style.marginTop = '50px';
+        		// logoDiv.style.border = '2px solid red';
+            	const firstDiv = logoDiv.querySelectorAll('div')[0];
+				const secondDiv = logoDiv.querySelectorAll('div')[2];
+				const thirdDiv = logoDiv.querySelectorAll('div')[3];
+
+				const button = thirdDiv.querySelector('i.fa-cloud-arrow-up').parentElement;
+				const logo_img = firstDiv.querySelector("#logoImg");
+
+				// console.log(firstDiv, secondDiv);
+				// console.log(thirdDiv, button);
+				//console.log(logo_img);
+
+			    logo_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${oldInput.logo}`);
+
+				firstDiv.style.display = 'block';
+				secondDiv.style.display = 'none';
+				button.disabled = true;
+         	}
+
+         	if (oldInput.portrait_image !== '') {
+        		// portraitDiv.style.marginTop = '50px';
+        		// portraitDiv.style.border = '2px solid red';
+            	const firstDiv = portraitDiv.querySelectorAll('div')[0];
+				const secondDiv = portraitDiv.querySelectorAll('div')[2];
+				const thirdDiv = portraitDiv.querySelectorAll('div')[3];
+
+				const button = thirdDiv.querySelector('i.fa-cloud-arrow-up').parentElement;
+				const port_img = firstDiv.querySelector("#portImg");
+
+				// console.log(firstDiv, secondDiv);
+				// console.log(thirdDiv, button);
+				//console.log(port_img);
+
+			    port_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${oldInput.portrait_image}`);
+
+				firstDiv.style.display = 'block';
+				secondDiv.style.display = 'none';
+				button.disabled = true;
+         	}
+
+         	if (oldInput.fileCode !== '') {
+         		// console.log(oldInput.fileCode);
+         		
+         		vu1.style.display = 'none';
+            	er1.style.display = 'block';
+
+            	const thirdVideoDiv = videoDiv.querySelectorAll('div')[6].nextElementSibling;
+
+            	//console.log(thirdVideoDiv);
+
+				thirdVideoDiv.disabled = true;
+
+				const videoTag = er1.querySelector('.videoDiv');
+          		vu1.style.display = 'none';
+
+          		videoTag.setAttribute('src', `https://api.hiphopboombox.com/api/uploads/${oldInput.fileCode}`);
+         	}
+
+         	if (oldInput.tags !== '') {
+         		const tagInput = document.querySelectorAll('.tag_input');
+
+            	tagInput.forEach(i => {
+	            	if (oldInput.tags.includes(i.value)) {
+	                	i.checked = true;
+	            	}
+	           	})
+         	}
+
+            globalThis.document.querySelectorAll('.delete-l-button').forEach(button => {
+		        button.addEventListener('click', function(e) {
+		            deleteLogoImage(this);
+		        });
+		    })
+
+		    globalThis.document.querySelectorAll('.delete-P-button').forEach(button => {
+		        button.addEventListener('click', function(e) {
+		            deletePortraitImage(this);
+		        });
+		    })
+
+		    globalThis.document.querySelectorAll('.delete-button').forEach(button => {
+		        button.addEventListener('click', function(e) {
+		            deleteVideo(this);
+		        });
+		    });
+
+            function deleteLogoImage(btn) {
+		        // btn.disabled = true;
+		        // console.log(btn, btn.previousElementSibling, globalThis.document.getElementById("formFilel"), 
+              	// globalThis.document.getElementById("formFilel").value);
+		        globalThis.document.getElementById("formFilel").value = '';
+		        globalThis.document.getElementById("formNameFilel").value = '';
+		        btn.previousElementSibling.style.display = 'block';
+		        btn.previousElementSibling.disabled = false;
+		        btn.parentElement.previousElementSibling.style.display = 'block';
+		        btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'none';
+		    }
+
+		    function deletePortraitImage(btn) {
+		        // btn.disabled = true;
+		        // console.log(btn, btn.previousElementSibling, globalThis.document.getElementById("formFileP"), 
+              	// globalThis.document.getElementById("formFileP").value);
+		        globalThis.document.getElementById("formFileP").value = '';
+		        globalThis.document.getElementById("formNameFileP").value = '';
+		        btn.previousElementSibling.style.display = 'block';
+		        btn.previousElementSibling.disabled = false;
+		        btn.parentElement.previousElementSibling.style.display = 'block';
+		        btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'none';
+		    }
+
+		    function deleteVideo(btn) {
+		          try {
+		            // console.log(btn);
+                btn.previousElementSibling.disabled = false;
+		            // console.log(btn.parentElement.previousElementSibling.previousElementSibling);
+
+		            if (xhr) {
+					    xhr.abort(); // Abort the ongoing XHR request
+					    xhr = null; // Clear the XHR variable
+					    alert('Upload cancelled.');
+
+					    const progressContainer = document.getElementById('progress-container');
+					    const progressBar = document.getElementById('upload-progress');
+					    const progressText = document.getElementById('progress-text');
+					    progressBar.value = 0;
+					    progressText.textContent = '0%';
+					    progressContainer.style.display = 'none';
+
+					    const spinner = document.getElementById('spinner');
+					    spinner.style.display = 'none';
+
+					    const fileInput = document.querySelector('#movieFile');
+					    const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling;
+					    fileNameDisplay.textContent = "No file chosen";
+
+					    submitButton.style.display = 'block';
+					    btn.disabled = false;
+					}
+
+		            const videoIframe = document.querySelector("#embed-responsive");
+		            const uploadButton = btn.previousElementSibling;
+		            const videoUploader = document.querySelector("#video-uploader");
+
+		            const iframeElement = document.querySelector(".videoDiv");
+		            // console.log(iframeElement.getAttribute("src"));
+		            const iUrl = iframeElement.getAttribute("src");
+                
+                	const fileName = document.getElementById("file_name");
+		            fileName.textContent = 'No file chosen';
+                
+                	document.getElementById("movieFile").value = '';
+
+		            // console.log(btn.parentElement.nextElementSibling);
+                
+                	// console.log(videoIframe, uploadButton, videoUploader);
+
+		            // console.log(iUrl, iUrl !== '');
+
+		           	if (iUrl !== '') {
+		              const fCode = document.getElementById("fileCode").value;
+
+		              // console.log(fCode);
+
+		                    videoIframe.style.display = 'none';
+		                    videoUploader.style.display = 'block';
+
+		                    document.getElementById("fileCode").value = '';
+
+		                    // console.log(uploadButton);
+		                    uploadButton.disabled = false;
+
+		                    const fileName = document.getElementById("file_name");
+		                    fileName.textContent = 'No file chosen';
+
+		                    submitButton.style.display = 'block';
+		            }
+
+		            else {
+		              // uploadButton.disabled = true;
+		              // btn.disabled = true;
+		              // submitButton.style.display = 'none';
+		              videoUploader.style.display = 'block';
+		              videoIframe.style.display = 'none';
+		            }
+		          }
+
+		          catch (error) {
+		            // Handle any errors that occur during data retrieval or video deletion
+		            console.error('Error:', error.message);
+		          }
+		    }
+        });
+	</script>
+
+<%- include("./includes/end.ejs"); %>
+
+</body>

@@ -1,0 +1,624 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/add.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 text-center add_div1">
+		        	<h2>Add Retail</h2>
+		        </div>
+
+		        <div class="col-12 col-sm-12 mt-3 border-0 add_div2">
+		        	<form 
+		        		action="/v1<% if(editing) { %>/viewRaffle/<%= sid %><% } else { %>/raffle<% } %>"
+		        		method="POST" 
+		        		id="searchForm" 
+		        		onkeydown="return event.key != 'Enter';"
+		        	>
+		        		<div class="add_div3 border">
+		        			<div class="col-12 col-lg-8 p-3">
+		        				<!-- title -->
+			        			<div class="mb-3">
+								  	  <label for="exampleFormControlInput1" class="form-label">Title</label>
+								  	  <input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="e.g., title1" value="<%= oldInput.title %>">
+								    </div>
+
+                    <!-- description -->
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                        <textarea class="form-control" name="des" id="exampleFormControlTextarea1" rows="5">
+                          <%= oldInput.des %>
+                        </textarea>
+                    </div>
+                      
+                      
+                    <% for(let i = 1; i <= 5; i++) { %>
+                      <!-- image -->
+                      <div class="mb-3" id="logo_div<%= i %>">
+                        <div style="display: none;">
+                          <label for="formFile<%= i %>" class="form-label">Image <%= i %></label>
+                          <div>
+                            <img src="" class="img-thumbnail" alt="..." width="300" height="300" id="logoImg<%= i %>" loading="lazy">
+                          </div>
+                        </div>
+                        <div>
+                          <label for="formFile" class="form-label">Image <%= i %></label>
+                          <input class="form-control" type="file" id="formFile<%= i %>" accept="image/*">
+                          <input type="hidden" name="image<%= i %>" id="formNameFile<%= i %>" value="<%= oldInput['image' + i.toString()] || '' %>">
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-between">
+                          <button type="button" class="btn upload-limage-btn border-0" data-id="<%= i %>">
+                              <i class="fa-solid fa-cloud-arrow-up"></i>
+                          </button>
+                          <button type="button" class="btn delete-l-button" data-id="<%= i %>">
+                              <i class="fa-solid fa-trash" style="color: red;"></i>
+                          </button>
+                          <div id="spinner_sub<%= i %>" class="spinner-border" role="status" style="display: none;">
+                              <span class="sr-only">Loading...</span>
+                          </div>
+                        </div>
+                      </div>
+                    <% } %>
+                      
+                    <div class="mb-3" id="brand_div">
+				                    <div style="display: none;">
+				                        <label for="formFile1" class="form-label">Brand Logo</label>
+				                        <div>
+				                        	<img src="" class="img-thumbnail" alt="..." width="300" height="300" id="brandImg" loading="lazy">
+				                        </div>
+				                    </div>
+				                    <div>
+				                        <label for="formFile" class="form-label">Brand Logo</label>
+				                        <input class="form-control" type="file" id="formFilel" accept="image/*">
+				                        <input type="hidden" name="brand_img" id="formNameFilel" value="<%= oldInput.brand_img %>">
+				                    </div>
+				                    <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-between">
+				                        <button type="button" class="btn upload-image-btn border-0">
+				                            <i class="fa-solid fa-cloud-arrow-up"></i>
+				                        </button>
+					                        <button type="button" class="btn delete-button">
+				                                <i class="fa-solid fa-trash" style="color: red;"></i>
+				                            </button>
+				                        <div id="spinner_sub" class="spinner-border" role="status" style="display: none;">
+				                            <span class="sr-only">Loading...</span>
+				                        </div>
+				                    </div>
+				            </div>                    
+                  </div>
+                    
+                  <div class="col-12 col-lg-4 p-3 border-0">
+                      <!-- retail price -->
+                      <div class="mb-3">
+                        <label for="price" class="form-label">Retail Price</label>
+                        <input class="form-control" type="number" id="price" name="retail_price" value="<%= oldInput.retail_price %>">
+                      </div>
+                    
+                      <!-- resell price -->
+                      <div class="mb-3">
+                        <label for="price" class="form-label">Resell Price</label>
+                        <input class="form-control" type="number" id="price" name="resell_price" value="<%= oldInput.resell_price %>">
+                      </div>
+                    
+                      <!-- brand -->
+                      <div class="mb-3">
+                        <label for="exampleFormControlInputBrand1" class="form-label">Brand</label>
+                        <input type="text" class="form-control" name="brand" id="exampleFormControlInputBrand1" placeholder="e.g., nike" value="<%= oldInput.brand %>">
+                      </div>
+                    
+                      <!-- category -->                   
+                      <div class="mb-3">
+                        <label for="price" class="form-label">Retail Category</label>
+                        <select class="form-select" aria-label="Default select example" name="cat_id">
+                          <option>Open this select menu</option>
+                          <option value="1" <%= oldInput.cat_id == '1' ? 'selected' : '' %>>Upcoming</option>
+                          <option value="2" <%= oldInput.cat_id == '2' ? 'selected' : '' %>>Popular</option>
+                          <option value="3" <%= oldInput.cat_id == '3' ? 'selected' : '' %>>Past</option>
+                          <option value="4" <%= oldInput.cat_id == '4' ? 'selected' : '' %>>Raffle</option>
+                        </select>
+                      </div>
+
+                      <!-- shoe size -->
+                      <div class="mb-4">
+	                      <% if(sizes == '') { %>
+						              <label class="form-label">Shoe Size</label>
+						              <div class="tag_div"></div>
+		                      <button 
+		                        type="button" 
+		                        class="btn btn-outline-success cat_btn"
+		                      >
+		                        + Add New Shoe Size
+		                      </button>
+		                      <div class="mt-2 mb-3 lower_cat_div" style="display: none;">
+		                          <input type="number" class="form-control" id="exampleInputcat" placeholder="enter new shoe size">
+		                        <button
+		                          type="button" 
+		                          class="btn btn-outline-primary add_cat_btn mt-3"
+		                        > 
+		                          Add New Shoe Size
+		                        </button>
+		                      </div>
+												<% } else { %>
+													<label class="form-label">Shoe Size</label>
+						              <div class="tag_div">
+						              	<% sizes.forEach(i => { %>
+						              		<div class="form-check">
+															  <input class="form-check-input" type="checkbox" value="<%= i %>" name="sizes" id="flexCheckDefault" checked>
+															  <label class="form-check-label" for="flexCheckDefault">
+															    <%= i %>
+															  </label>
+															</div>
+						              	<% }) %>
+						              </div>
+		                      <button 
+		                        type="button" 
+		                        class="btn btn-outline-success cat_btn"
+		                      >
+		                        + Add New Shoe Size
+		                      </button>
+		                      <div class="mt-2 mb-3 lower_cat_div" style="display: none;">
+		                          <input type="number" class="form-control" id="exampleInputcat" placeholder="enter new shoe size">
+		                        <button
+		                          type="button" 
+		                          class="btn btn-outline-primary add_cat_btn mt-3"
+		                        > 
+		                          Add New Shoe Size
+		                        </button>
+		                      </div>
+												<% } %>
+											</div>
+                    
+                      <!-- date -->
+                      <div class="mb-3">
+                        <label for="cdate" class="form-label">Retail Resell</label>
+                        <input class="form-control" type="date" id="cdate" name="date">
+                      </div>
+
+                      <!-- submit btn -->
+                      <div class="mb-3 text-center">
+                        <button type="submit" class="btn btn-primary" id="subBtn">Submit</button>
+                      </div>
+                  </div>
+                    
+		        		</div>
+		        	</form>
+		        </div>
+		    </div>
+		</div>
+    </section>
+
+  <footer></footer>
+
+	<script>
+		let oi = '<%= JSON.stringify(oldInput) %>';
+		let editing = '<%= editing %>';
+		let sizes = '<%= JSON.stringify(sizes) %>';
+	</script>
+
+	<script>
+		  window.addEventListener('load', function () {
+	      // console.log("hii...");
+	      // Get the loading spinner element
+	      const loadingSpinner = document.getElementById('loadingSpinner');
+	        
+	      // Hide the loading spinner
+	      loadingSpinner.style.display = 'none';
+	    });
+
+	    globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        
+            // .replace(/[\x00-\x1F\x7F]/g, '')
+            const oldInput = JSON.parse(oi.replace(/&#34;/g, '"').replace(/[\x00-\x1F\x7F]/g, ''));
+        
+            // console.log(oldInput);
+
+            const sizes1 = JSON.parse(sizes.replace(/&#34;/g, '"'));
+
+			      const form = globalThis.document.getElementById('searchForm');
+			      const submitButton = globalThis.document.getElementById('subBtn');
+            const spinner = document.getElementById('spinner-border');
+
+            const brandDiv = globalThis.document.getElementById('brand_div');
+        
+            const cDate = globalThis.document.getElementById('cdate');
+
+			      const descriptionContainer1 = document.getElementById('exampleFormControlTextarea1');
+
+        		const descriptionLines1 = descriptionContainer1.innerHTML.trim();
+			    	// console.log(descriptionLines1);
+			    	descriptionContainer1.textContent = descriptionLines1;
+
+			    	const catBtn = document.querySelector('.cat_btn');
+            const addCatBtn = document.querySelector('.add_cat_btn');
+
+            const lowerCatDiv = document.querySelector('.lower_cat_div');
+
+            const sizeCont = document.querySelector('.tag_div');
+
+            // console.log(vu1, er1);
+
+            catBtn.addEventListener('click', () => {
+            	if (lowerCatDiv.style.display == 'none') {
+            		lowerCatDiv.style.display = 'block';
+            	}
+            	else {
+            		lowerCatDiv.style.display = 'none';
+            	}
+            })
+
+            addCatBtn.addEventListener('click', (e) => {
+	        		const tag = document.getElementById("exampleInputcat");
+	        		// console.log(tag, tag.value);
+
+	        		if (tag.value == '') {
+	        			return;
+	        		}
+
+	        		else {
+	        			// console.log(tag, tag.value);
+
+	        			const newSize = tag.value; // Get the size input
+
+						    // Create a label and checkbox element
+						    const sizeDiv = document.createElement('div');
+						    sizeDiv.classList.add('size-item'); // Add a class for styling if needed
+
+						    const sizeLabel = document.createElement('label');
+						    sizeLabel.textContent = ` ${newSize}`;
+
+						    const sizeCheckbox = document.createElement('input');
+						    sizeCheckbox.type = 'checkbox';
+						    sizeCheckbox.name = 'sizes';
+						    sizeCheckbox.value = newSize;
+
+						    // Append the checkbox and label to the sizeDiv
+						    sizeDiv.appendChild(sizeCheckbox);
+						    sizeDiv.appendChild(sizeLabel);
+
+						    // Append the sizeDiv to the tag_div container
+						    sizeCont.appendChild(sizeDiv);
+
+						    // Optionally, clear the input field
+						    tag.value = '';
+	        		}
+	        	})
+
+            globalThis.document.querySelectorAll('.upload-limage-btn')
+            	.forEach(button => {
+                  button.addEventListener('click', function(e) {
+                    const dataID = this.getAttribute('data-id');
+                    uploadLogoImage(this, dataID);
+                  });
+			        });
+        
+          globalThis.document.querySelectorAll('.upload-image-btn')
+            	.forEach(button => {
+			        button.addEventListener('click', function(e) {
+			          uploadBrandLogo(this);
+			        });
+			    });
+
+	        document.addEventListener("change", function (event) {
+	          if (event.target.matches(".file-input")) {
+	            const fileInput = event.target;
+	            const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+
+	            // console.log(fileInput, fileNameDisplay);
+
+	            const file = fileInput.files[0];
+	            // console.log(file);
+	            if (file) {
+	              fileNameDisplay.textContent = file.name;
+	            } else {
+	              fileNameDisplay.textContent = "No file chosen";
+	            }
+	          }
+	        });
+
+	        function uploadLogoImage(btn, id) {
+	          	// console.log("logo....", btn, id);
+            
+		        submitButton.style.display = 'none';
+		        btn.disabled = true;
+
+		        const formFile = globalThis.document.getElementById(`formFile${id}`);
+
+		        const file = formFile.files[0];
+
+		        if (formFile.files.length === 0) {
+		            alert('Please select a image to upload.');
+		            btn.disabled = false;
+		            submitButton.style.display = 'block';
+		            return;
+		        }
+
+		        else if (file) {
+		        	submitButton.style.display = 'block';
+		            // console.log(file.name);
+		            function isVideoExtension(extension) {
+		              const videoExtensions = [".png", ".jpg", ".jpeg", ".webp"];
+		              return videoExtensions.includes(extension.toLowerCase());
+		            }
+		            const extension = file.name.match(/\.([^\.]+)$/);
+
+		            if (extension) {
+		              const extractedExtension = extension[1].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+		              const isVideo = isVideoExtension("." + extractedExtension); // Add dot prefix
+		              // console.log(isVideo);
+		              if (!isVideo) {
+		                alert('Please select a image to upload.');
+		                btn.disabled = false;
+		                // const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+		                formFile.value = "";
+		                return;
+		              }
+		            } else {
+		              console.log("No extension found");
+		            }
+		        }
+
+		        submitButton.style.display = 'none';
+
+		        const spinner = document.getElementById(`spinner_sub${id}`);
+		        spinner.style.display = 'block';
+
+		        const formdata = new FormData();
+		        formdata.append("fileToUpload", file);
+
+		        const requestOptions = {
+		            method: "POST",
+		            body: formdata,
+		            redirect: "follow"
+		        };
+
+		        fetch("https://api.hiphopboombox.com/api/uploadImage.php", requestOptions)
+		            .then((response) => response.json())
+		            .then((result) => {
+		              // console.log(result);
+		              if (result.isSuccess == true) {
+		                spinner.style.display = 'none';
+		                btn.parentElement.style.display = 'none';
+		                globalThis.document.getElementById(`formNameFile${id}`).value = result.image;
+		                btn.parentElement.previousElementSibling.style.display = 'none';
+		                const showDiv = btn.parentElement.previousElementSibling.previousElementSibling;
+
+			        	    const logo_img = showDiv.querySelector(`#logoImg${id}`);
+
+			        	    logo_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${result.image}`);
+
+			        	    showDiv.style.display = 'block';
+
+		                btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'block';
+		                btn.parentElement.parentElement.style.marginBottom = '50px';
+		                submitButton.style.display = 'block';
+		              }
+		              else {
+		                alert(result.errorMsg);
+		                btn.disabled = false;
+		                file.value = '';
+		                spinner.style.display = 'none';
+		                return;
+		              }
+		            })
+		            .catch((error) => console.error(error));
+        	}
+        
+          function uploadBrandLogo(btn) {
+	          	// console.log("brand logo....");
+		        submitButton.style.display = 'none';
+		        btn.disabled = true;
+
+		        const formFile1 = globalThis.document.getElementById("formFilel");
+
+		        const file = formFile1.files[0];
+
+		        if (formFile1.files.length === 0) {
+		            alert('Please select a image to upload.');
+		            btn.disabled = false;
+		            submitButton.style.display = 'block';
+		            return;
+		        }
+
+		        else if (file) {
+		        	submitButton.style.display = 'block';
+		            // console.log(file.name);
+		            function isVideoExtension(extension) {
+		              const videoExtensions = [".png", ".jpg", ".jpeg", ".webp", ".avif"];
+		              return videoExtensions.includes(extension.toLowerCase());
+		            }
+		            const extension = file.name.match(/\.([^\.]+)$/);
+
+		            if (extension) {
+		              const extractedExtension = extension[1].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+		              const isVideo = isVideoExtension("." + extractedExtension); // Add dot prefix
+		              // console.log(isVideo);
+		              if (!isVideo) {
+		                alert('Please select a image to upload.');
+		                btn.disabled = false;
+		                // const fileNameDisplay = fileInput.nextElementSibling.nextElementSibling.nextElementSibling; // The third sibling is the file-name span
+		                formFile1.value = "";
+		                return;
+		              }
+		            } else {
+		              console.log("No extension found");
+		            }
+		        }
+
+		        submitButton.style.display = 'none';
+
+		        const spinner = document.getElementById("spinner_sub");
+		        spinner.style.display = 'block';
+
+		        const formdata = new FormData();
+		        formdata.append("fileToUpload", file);
+
+		        const requestOptions = {
+		            method: "POST",
+		            body: formdata,
+		            redirect: "follow"
+		        };
+
+		        fetch("https://api.hiphopboombox.com/api/uploadImage.php", requestOptions)
+		            .then((response) => response.json())
+		            .then((result) => {
+		              // console.log(result);
+		              if (result.isSuccess == true) {
+		                spinner.style.display = 'none';
+		                btn.parentElement.style.display = 'none';
+		                globalThis.document.getElementById("formNameFilel").value = result.image;
+		                btn.parentElement.previousElementSibling.style.display = 'none';
+		                const showDiv = btn.parentElement.previousElementSibling.previousElementSibling;
+
+			        	const logo_img = showDiv.querySelector("#brandImg");
+
+			        	logo_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${result.image}`);
+
+			        	showDiv.style.display = 'block';
+
+		                btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'block';
+		                btn.parentElement.parentElement.style.marginBottom = '50px';
+		                submitButton.style.display = 'block';
+		              }
+		              else {
+		                alert(result.errorMsg);
+		                btn.disabled = false;
+		                file.value = '';
+		                spinner.style.display = 'none';
+		                return;
+		              }
+		            })
+		            .catch((error) => console.error(error));
+        	}
+
+        	if (oldInput.brand_img !== '') {
+        		// logoDiv.style.marginTop = '50px';
+        		// logoDiv.style.border = '2px solid red';
+            	const firstDiv = brandDiv.querySelectorAll('div')[0];
+              const secondDiv = brandDiv.querySelectorAll('div')[2];
+              const thirdDiv = brandDiv.querySelectorAll('div')[3];
+
+              const button = thirdDiv.querySelector('i.fa-cloud-arrow-up').parentElement;
+              const logo_img = firstDiv.querySelector("#brandImg");
+
+              // console.log(firstDiv, secondDiv);
+              // console.log(thirdDiv, button);
+              //console.log(logo_img);
+
+                logo_img.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${oldInput.brand_img}`);
+
+              firstDiv.style.display = 'block';
+              secondDiv.style.display = 'none';
+              button.disabled = true;
+         	}
+        
+
+          if (oldInput) {
+            for (let i = 1; i <= 5; i++) {
+              const imageKey = 'image' + i;  // Dynamically generate the image key, like image1, image2, etc.
+              const imageUrl = oldInput[imageKey];
+              // console.log(imageUrl);
+
+              // Check if the image exists
+              if (imageUrl && imageUrl !== '') {
+                const logoDiv = document.getElementById('logo_div' + i);
+                const firstDiv = logoDiv.querySelectorAll('div')[0];  // The div that holds the img
+                const secondDiv = logoDiv.querySelectorAll('div')[1]; // The div with file input
+                const buttonDiv = logoDiv.querySelectorAll('div')[3]; // The div with upload and delete buttons
+                const thirdDiv = logoDiv.querySelectorAll('div')[2];
+
+                const logoImg = firstDiv.querySelector("#logoImg" + i);  // The img element
+                
+                // console.log(secondDiv, buttonDiv);
+
+                // Set the image source dynamically
+                logoImg.setAttribute("src", `https://api.hiphopboombox.com/api/uploads/${imageUrl}`);
+
+                // Show the image, hide the file input
+                firstDiv.style.display = 'block';
+                secondDiv.style.display = 'block';
+                thirdDiv.style.display = 'none';
+
+                // Optionally, disable the upload button if an image is present
+                const uploadButton = buttonDiv.querySelector('button.upload-limage-btn');
+                if (uploadButton) {
+                  uploadButton.disabled = true;
+                }
+              }
+            }
+          }
+        
+          if (oldInput.date !== '' && editing) {
+            // console.log(oldInput.date);
+            const date = new Date(oldInput.date);
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() is 0-based
+            const day = String(date.getDate()).padStart(2, '0');
+
+            // Format it to "YYYY-MM-DD"
+            const formattedDate = `${year}-${month}-${day}`;
+            cDate.value = formattedDate;
+          }
+        
+          if (oldInput.date !== '' && !editing) {
+            cDate.value = oldInput.date;
+          }
+
+        	globalThis.document.querySelectorAll('.delete-l-button').forEach(button => {
+		        button.addEventListener('click', function(e) {
+                const dataID = this.getAttribute('data-id');
+		            deleteLogoImage(this, dataID);
+		        });
+		      })
+
+		    function deleteLogoImage(btn, id) {
+		        globalThis.document.getElementById(`formFile${id}`).value = '';
+		        globalThis.document.getElementById(`formNameFile${id}`).value = '';
+		        btn.previousElementSibling.style.display = 'block';
+		        btn.previousElementSibling.disabled = false;
+		        btn.parentElement.previousElementSibling.style.display = 'block';
+		        btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'none';
+		    }
+        
+        globalThis.document.querySelectorAll('.delete-button').forEach(button => {
+		        button.addEventListener('click', function(e) {
+		            deleteBrandLogoImage(this);
+		        });
+		    })
+
+		    function deleteBrandLogoImage(btn) {
+		        globalThis.document.getElementById("formFilel").value = '';
+		        globalThis.document.getElementById("formNameFilel").value = '';
+		        btn.previousElementSibling.style.display = 'block';
+		        btn.previousElementSibling.disabled = false;
+		        btn.parentElement.previousElementSibling.style.display = 'block';
+		        btn.parentElement.previousElementSibling.previousElementSibling.style.display = 'none';
+		    }
+		})
+    </script>
+
+<%- include("./includes/end.ejs"); %>
+
+</body>

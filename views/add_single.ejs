@@ -1,0 +1,201 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/add.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 text-center add_div1">
+		        	<h2>Add Blog</h2>
+		        </div>
+
+		        <div class="col-12 col-sm-12 mt-3 border-0 add_div2">
+		        	<form 
+		        		action="/v1<% if(editing) { %>/viewSingle/<%= sid %><% } else { %>/addSingle<% } %>"
+		        		method="POST"
+		        		id="audio-form" 
+		        		onkeydown="return event.key != 'Enter';"
+		        	>
+		        		<div class="add_div3 border">
+		        			<div class="col-12 col-lg-8 p-3">
+		        				<!-- title -->
+			        			<div class="mb-3">
+								  	<label for="exampleFormControlInput1" class="form-label">Title</label>
+								  	<input type="text" class="form-control" name="title" id="exampleFormControlInput1" placeholder="e.g., title1" value="<%= oldInput.title %>">
+								</div>
+
+								<!-- description -->
+								<div class="mb-3">
+								  	<label for="exampleFormControlTextarea1" class="form-label">Description</label>
+								  	<textarea class="form-control" name="des" id="exampleFormControlTextarea1" rows="5">
+								  		<%= oldInput.des %>
+								  	</textarea>
+								</div>
+
+								<!-- image -->
+								<div class="mb-3" id="logo_div">
+				                    <div style="display: none;">
+				                        <label for="formFile1" class="form-label">Album Cover</label>
+				                        <div>
+				                        	<img src="" class="img-thumbnail" alt="..." width="300" height="300" id="coverImg" loading="lazy">
+				                        </div>
+				                    </div>
+				                    <div>
+				                        <label for="formFile" class="form-label">Album Cover</label>
+				                        <input class="form-control" type="file" id="formFilel" accept="image/*">
+				                        <input type="hidden" name="cover" id="formNameFilel" value="<%= oldInput.cover %>">
+				                    </div>
+				                    <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-between">
+				                        <button type="button" class="btn upload-limage-btn border-0">
+				                            <i class="fa-solid fa-cloud-arrow-up"></i>
+				                        </button>
+					                        <button type="button" class="btn delete-l-button">
+				                                <i class="fa-solid fa-trash" style="color: red;"></i>
+				                            </button>
+				                        <div id="spinner_subl" class="spinner-border" role="status" style="display: none;">
+				                            <span class="sr-only">Loading...</span>
+				                        </div>
+				                    </div>
+				                </div>
+
+				                <!-- audio uploader -->
+				                <div class="mb-3" id="a_div">
+								    <div class="col-12">
+								        <label for="" class="form-label">Audio</label>
+								    </div>
+								    <div class="col-12 col-sm-6 col-md-8 col-lg-5 border text-sm-center p-0" id="embed-responsive" style="display: none;">
+								        <div class="embed-responsive embed-responsive-16by9">
+								            <!-- Audio player -->
+								            <audio id="audioPlayer" class="audioDiv" controls muted autoplay>
+								                Your browser does not support the audio element.
+								            </audio>
+								        </div>
+								    </div>
+								    <div class="col-12 col-sm-6 col-md-8 col-lg-5 video-uploader" id="video-uploader">
+								        <label class="file-label" for="audioFile" id="fileLabel">
+								            <i class="fa-solid fa-file-audio"></i> Choose Audio
+								        </label>
+								        <!-- File input for selecting audio -->
+								        <input type="file" id="audioFile" class="file-input" accept="audio/*" />
+								        <input type="hidden" class="border-0" id="album_Id" value="">
+								        <input type="hidden" id="fileCode" name="fileCode" class="custom-file-input" value="<%= oldInput.fileCode %>">
+								        <span id="file_name" name="file_name" class="file-name">No file chosen</span>
+								    </div>
+								    <div class="col-12 col-sm-6 col-md-4 col-lg-5 text-start d-flex justify-content-between align-items-center" style="word-wrap: break-word;">
+								        <p id="audio_text" class="text-break"></p>
+								    </div>
+								    <div class="col-12 col-sm-12 col-md-12 col-lg-2 d-flex justify-content-between">
+								        <div id="spinner" class="spinner-border" role="status" style="display: none;">
+								            <span class="sr-only">Loading...</span>
+								        </div>
+								        <button type="button" class="btn upload-button border-0">
+								            <i class="fa-solid fa-cloud-arrow-up"></i>
+								        </button>
+								        <button type="button" class="btn delete-button">
+								            <i class="fa-solid fa-trash" style="color: red;"></i>
+								        </button>
+								        <!-- Subtitle Button -->
+								        <button type="button" class="btn subtitle-button border-0 d-none" data-tvshow-id="">
+								            <i class="fa-solid fa-closed-captioning"></i>
+								        </button>
+								    </div>
+								</div>
+		        			</div>
+
+		        			<div class="col-12 col-lg-4 p-3"> 
+				                <!-- category -->
+				                <div class="mb-4">
+					                <% if(category != '') { %>
+					                	<label class="form-label">Categories</label>
+					                	<div class="tag_div"></div>
+										<button 
+											type="button" 
+											class="btn btn-outline-success cat_btn"
+										>
+											+ Add New Category
+										</button>
+										<div class="mt-2 mb-3 lower_cat_div" style="display: none;">
+										    <input type="text" class="form-control" id="exampleInputcat" placeholder="enter new category">
+											<button
+												type="button" 
+												class="btn btn-outline-primary add_cat_btn mt-3"
+											> 
+												Add New Category
+											</button>
+										</div>
+									<% } %>
+								</div>
+
+								<!-- submit btn -->
+								<div class="mb-3 text-center">
+									<button type="submit" class="btn btn-primary" id="subBtn">Submit</button>
+								</div>
+			        		</div>
+		        		</div>
+		        	</form>
+		        </div>
+		    </div>
+		</div>
+    </section>
+
+    <footer></footer>
+
+    <script>
+		window.addEventListener('load', function () {
+	      // console.log("hii...");
+	      // Get the loading spinner element
+	      const loadingSpinner = document.getElementById('loadingSpinner');
+	        
+	      // Hide the loading spinner
+	      loadingSpinner.style.display = 'none';
+	    });
+
+	    globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            // Handle file input change event
+		    document.getElementById('audioFile').addEventListener('change', function (event) {
+		        const file = event.target.files[0];
+		        
+		        if (file) {
+		            // Display the file name
+		            document.getElementById('file_name').textContent = file.name;
+
+		            document.getElementById('audio_text').textContent = file.name.split(' ', 2).join(' ')+"...";
+
+		            // Show the audio player and set the audio source
+		            // const audioPlayer = document.getElementById('audioPlayer');
+		            // const embedResponsive = document.getElementById('embed-responsive');
+		            // const audioURL = URL.createObjectURL(file);
+		            
+		            // audioPlayer.src = audioURL;
+		            // embedResponsive.style.display = 'block'; // Show the audio player
+		        }
+		    });
+        })
+    </script>
+
+    <%- include("./includes/end.ejs"); %>
+
+</body>

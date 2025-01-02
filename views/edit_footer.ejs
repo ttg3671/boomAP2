@@ -1,0 +1,106 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/add.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		      <div class="col-12 text-center">
+		        <% if(errorMessage != 'null') { %>
+		        	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		        <% } %>
+		      </div>
+
+		      <div class="col-12 col-sm-12 text-center add_div1">
+            <h2>EDIT <span class="text-uppercase"><%= t %></span> </h2>
+		      </div>
+            
+          <div class="col-12 col-sm-12 mt-3 border-0 add_div2">
+            <form 
+		        		action="/v1<% if(editing) { %>/editFooter/<%= sid %><% } else { %>/footer/<%= id %><% } %>"
+		        		method="POST" 
+		        		id="searchForm" 
+		        		onkeydown="return event.key != 'Enter';"
+		        >
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" id="exampleFormControlInput1" value="<%= oldInput.name %>">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="10">
+                  <%= oldInput.description %>
+                </textarea>
+              </div>
+              <input type="hidden" name="id" value="<%= id %>" />
+              <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+      </div>
+    </div>
+  </section>
+              
+  <script>
+		// let oi = '<%= JSON.stringify(oldInput) %>';
+    let oi = '<%= JSON.stringify(oldInput).replace(/\\n/g, '\\\\n').replace(/"/g, '\\"') %>';
+		let editing = '<%= editing %>';
+	</script>
+
+	<script>
+	    const loadingSpinner = document.getElementById('loadingSpinner');
+
+	    setTimeout(function() {
+            if (loadingSpinner) {
+              loadingSpinner.style.display = 'none';
+            }
+      }, 3000);
+    
+      globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        
+            // console.log(oi);
+
+            const oldInput = JSON.parse(oi.replace(/&#34;/g, '"'));
+        
+            // console.log(oldInput.description);
+        
+            function formatDescription(text) {
+                // Replace single newlines with double newlines
+                let formattedText = text.replace(/\n\n/g, '<br>');
+
+                // Optionally, handle multiple spaces if needed
+                // This will convert sequences of spaces into a single space (or adjust based on your requirement)
+                formattedText = formattedText.replace(/ {2,}/g, '');
+
+                return formattedText;
+            }
+        
+            const formattedDescription = formatDescription(oldInput.description);
+        
+            // console.log(formattedDescription);
+        
+            globalThis.document.getElementById('exampleFormControlTextarea1').innerHTML = formattedDescription;
+      })
+  </script>
+
+	<%- include("./includes/end.ejs"); %>
+
+</body>
+                    

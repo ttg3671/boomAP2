@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Onest&display=swap');
+
+* {
+  padding: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: 'Onest', sans-serif;
+}
+
+.loading-spinner {
+  display: none; /* Initially hidden */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoSp {
+  display: block;
+  margin: 0 auto;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+.active {
+  transition: all 0.3s ease-in-out; /* Adjusted duration for smoother transition */
+  color: white; /* Default color */
+}
+
+.active:hover {
+  font-size: 20px;
+  color: #0096FF !important; /* Color on hover */
+  font-weight: 600;
+}
+
+.active .fa-solid {
+  transition: all 0.3s ease-in-out; /* Ensure icon also transitions smoothly */
+}
+
+.active:hover .fa-solid {
+  font-size: 20px;
+  color: #0096FF !important; /* Icon color on hover */
+}
+
+/* Add a transition for the default state */
+.active {
+  color: white; /* Ensure this is the default color */
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

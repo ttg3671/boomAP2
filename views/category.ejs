@@ -1,0 +1,121 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/cat.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 100px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 col-lg-3 cat_div1"></div>
+
+		        <div class="col-12 col-sm-12 col-lg-6 border cat_div2">
+		        	<h3 class="text-center">
+		        		<%= path == 'post' ? 'Add Category' : 'Blog Category' %>
+		        	</h3>
+
+		        	<div>
+		        		<% if(editing == false) { %>
+			        		<form action="<%= path == 'post' ? '/v1/category' : '/v1/newsCategory' %>" method="POST">
+			        			<div class="mb-3">
+								    <label for="inputcat" class="form-label"></label>
+								    <input type="text" class="form-control" name="name" id="inputcat" aria-describedby="emailHelp" placeholder="enter category name..." value="<%= oldInput.name %>">
+								</div>
+								<div class="text-center mb-3">
+	  								<button type="submit" class="btn btn-primary">Submit</button>
+	  							</div>
+			        		</form>
+			        	<% } else { %>
+			        		<form action="<%= path == 'post' ? '/v1/editcat' : '/v1/editNewsCat' %>" method="POST">
+			        			<div class="mb-3">
+								    <label for="inputcat" class="form-label"></label>
+								    <input type="text" class="form-control" name="name" id="inputcat" aria-describedby="emailHelp" placeholder="enter category name..." value="<%= category2[0].name %>">
+								</div>
+								<div class="text-center mb-3">
+									<input type="hidden" name="cid" value="<%= id %>">
+	  								<button type="submit" class="btn btn-primary">UPDATE</button>
+	  							</div>
+			        		</form>
+			        	<% } %>
+		        	</div>
+		        </div>
+
+		        <div class="col-12 col-sm-12 col-lg-3 cat_div3"></div>
+
+		        <div class="col-12 col-sm-12 col-lg-3"></div>
+
+		        <% if (category != '' && path == 'post') { %>
+			        <div class="col-12 col-sm-12 col-lg-6 d-flex flex-wrap p-3">
+			        	<% category.forEach(i => { %>
+			        		<div class="mb-4 me-5 d-flex align-items-center">
+				        		<a href="/v1/category/<%= i.id %>" type="button" class="btn btn-outline-success"><%= i.name %></a>
+				        		<% if (editing) { %>
+						            <a href="/v1/delcat/<%= i.id %>" type="button" class="btn delete-l-button">
+					                    <i class="fa-solid fa-trash" style="color: red;"></i>
+					                </a>
+					            <% } %>
+				            </div>
+			        	<% }) %>
+			        </div>
+			    <% } else if (category != '' && path == 'blog') { %>
+			    	<div class="col-12 col-sm-12 col-lg-6 d-flex flex-wrap p-3">
+			        	<% category.forEach(i => { %>
+			        		<div class="mb-4 me-5 d-flex align-items-center">
+				        		<a href="/v1/newsCategory/<%= i.id %>" type="button" class="btn btn-outline-success"><%= i.name %></a>
+				        		<% if (editing) { %>
+						            <a href="/v1/newsdelcat/<%= i.id %>" type="button" class="btn delete-l-button">
+					                    <i class="fa-solid fa-trash" style="color: red;"></i>
+					                </a>
+					            <% } %>
+				            </div>
+			        	<% }) %>
+			        </div>
+			    <% } %>
+
+		        <div class="col-12 col-sm-12 col-lg-3"></div>
+
+
+		        <div class="col-12" style="margin-top: 50px;"></div>
+		    </div>
+		</div>
+	</section>
+
+	<footer></footer>
+
+	<script>
+		window.addEventListener('load', function () {
+	      // console.log("hii...");
+	      // Get the loading spinner element
+	      const loadingSpinner = document.getElementById('loadingSpinner');
+	        
+	      // Hide the loading spinner
+	      loadingSpinner.style.display = 'none';
+	    });
+
+	    globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        });
+	</script>
+
+<%- include("./includes/end.ejs"); %>
+
+</body>

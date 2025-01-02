@@ -1,0 +1,90 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/add.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 text-center add_div1">
+		        	<h2>Footer PopUp</h2>
+		        </div>
+
+		        <div class="col-12 col-sm-12 mt-3 border-0 add_div2">
+		        	<form 
+		        		action="/v1/fp"
+		        		method="POST" 
+		        		id="searchForm" 
+		        		onkeydown="return event.key != 'Enter';"
+		        	>
+		        		<div class="add_div3 border">
+		        			<div class="col-12 col-lg-8 p-3">
+			        			<!-- Question -->
+			        			<div class="mb-3">
+								    <label for="exampleInputEmail1" class="form-label">Title</label>
+								    <input type="text" class="form-control" id="exampleInputEmail1" name="title" value="<%= oldInput.title %>">
+								</div>
+
+								<!-- Question Translate -->
+								<div class="mb-3">
+								    <label for="exampleInputEmail2" class="form-label">Android</label>
+								    <input type="url" class="form-control" id="exampleInputEmail2" name="link1" value="<%= oldInput.link1 %>">
+								</div>
+
+								<!-- answer -->
+                	<div class="mb-5">
+									<label for="exampleInputEmail3" class="form-label">IOS</label>
+								    <input type="url" class="form-control" id="exampleInputEmail3" name="link2" value="<%= oldInput.link2 %>">
+								</div>
+                    
+                <input type="hidden" name="id" value="<%= oldInput.id %>" />
+
+								<!-- submit btn -->
+								<div class="mb-3 text-center">
+									<button type="submit" class="btn btn-primary" id="subBtn">Submit</button>
+								</div>
+							</div>
+		        		</div>
+		        	</form>
+		        </div>
+		    </div>
+		</div>
+	</section>
+
+	<script>
+	    const loadingSpinner = document.getElementById('loadingSpinner');
+
+	    setTimeout(function() {
+            if (loadingSpinner) {
+              loadingSpinner.style.display = 'none';
+            }
+        }, 3000);
+
+        globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        })
+	</script>
+
+	<%- include("./includes/end.ejs"); %>
+
+</body>

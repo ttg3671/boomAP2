@@ -1,0 +1,233 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/va.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 vaDiv1" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-lg-12 p-0 border mb-3">
+		        	<h3 class="text-center">Video Analysis</h3>
+
+		        	<form method="POST" id="form1">
+		        		<div class="mt-5 d-flex justify-content-around align-items-center">
+			        		<div>
+			        			<label for="sDate" style="color: grey;">Start Date</label>
+			        			<input type="date" name="startDate" id="sDate" />
+			        		</div>
+
+			        		<div>
+			        			<label for="eDate" style="color: grey;">End Date</label>
+			        			<input type="date" name="endDate" id="eDate" />
+			        		</div>
+
+			        		<button type="submit" class="btn btn-outline-success">GO</button>
+		        		</div>
+		        	</form>
+
+		        	<div class="mt-5" style="display: none;">
+		        		<canvas id="myChart" style="width:100%; max-width:700px;"></canvas>
+		        	</div>
+		        </div>
+
+		        <div class="col-12 col-sm-12 div3 mt-5 border-0">
+					<h5></h5>
+					<h5 style="color: #00e5fa;"><%= heading %></h5>
+					<form id="myForm" method="GET">
+						<select id="mySelect" name="ts" style="border: none;">
+						  	<option>Sort By</option>
+						  	<option value="n" <%= ts === 'n' ? 'selected' : '' %>>Now</option>
+						  	<option value="w" <%= ts === 'w' ? 'selected' : '' %>>This Week</option>
+						  	<option value="m" <%= ts === 'm' ? 'selected' : '' %>>This Month</option>
+						  	<option value="y" <%= ts === 'y' ? 'selected' : '' %>>This Year</option>
+						</select>						
+					</form>
+				</div>
+
+		        <div class="col-12 col-lg-12 p-0 border-0 mt-5">
+		        	<% if(showData != '') { %>
+		        		<div class="div4 border-0">
+		        			<% showData.forEach(i => { %>
+			        			<div class="card" style="width: 200px;">
+			        				<div class="skeleton"></div>
+									<img 
+										src=""
+										data-src="<%= i.image %>" 
+										class="card-img-top img1" 
+										alt="Movie Image"
+										width="200"
+										height="200"
+									>
+								  	<div class="card-body">
+								    	<h5 class="card-title text-white"><%= i.title %></h5>
+								    	<div class="d-flex align-items-center justify-content-center text-white">
+								    		<i class="fa-solid fa-eye fa-lg me-2" style="color: grey;"></i><%= i.views %>
+								    	</div>
+								  	</div>
+								</div>
+							<% }) %>
+		        		</div>
+		        	<% } else { %>
+		        		<h5 class="text-center p-2">No data yet...</h5>
+		        	<% } %>
+		        </div>
+		    </div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container-fluid" style="height: 100px;"></div>
+	</section>
+
+	<footer></footer>
+
+	<script>
+		window.addEventListener('load', function () {
+	      	// console.log("hii...");
+	      	// Get the loading spinner element
+	      	const loadingSpinner = document.getElementById('loadingSpinner');
+	        
+	      	// Hide the loading spinner
+	      	loadingSpinner.style.display = 'none';
+	    });
+
+	   	globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            const selectElement = globalThis.document.getElementById('mySelect');
+		    const form = globalThis.document.getElementById('myForm');
+			selectElement.addEventListener('change', function() {
+				const sl = this.value;
+				// console.log(sl);
+				form.action = `/v1/va/?ts=sl`;
+                form.submit();
+			});
+
+			let myChart;
+
+			const images = document.querySelectorAll('.img1');
+
+			const baseImgUrl = "https://api.hiphopboombox.com/api/uploads/";
+
+			images.forEach(img => {
+				img.onload = () => {
+					img.previousElementSibling.style.display = 'none';
+					img.style.display = 'block';
+				}
+
+				img.onerror = () => {
+			        // Hide the image
+			        img.style.display = 'none';
+			        
+			        // Show the skeleton loader
+			        const skeleton = img.previousElementSibling;
+			        if (skeleton) {
+			            skeleton.style.display = 'block';
+			        }
+			    };
+
+				const imgElement = img.getAttribute('data-src');
+                // console.log(imgElement); 
+                
+                // console.log(!imgElement.includes('www.w3schools') &&!imgElement.includes('static.worldstarhiphop'));
+
+                if (!imgElement.includes('www.w3schools') && !imgElement.includes('static.worldstarhiphop')) {
+                 	img.setAttribute('src', baseImgUrl + imgElement);
+                }
+
+                else {
+                	img.setAttribute('src', imgElement); // Set src to trigger loading
+                }
+			})
+
+			const form1 = document.getElementById("form1");
+
+			form1.addEventListener('submit', (e) => {
+				e.preventDefault();
+
+				const sDate = form1.startDate.value.trim();
+				const eDate = form1.endDate.value.trim();
+
+				// console.log(sDate, eDate);
+
+				if (sDate == '' || eDate == '') {
+					alert("Select start and end date...");
+				}
+
+				else {
+					const formdata = new FormData();
+					formdata.append("startDate", sDate);
+					formdata.append("endDate", eDate);
+
+					const requestOptions = {
+					  method: "POST",
+					  body: formdata,
+					  redirect: "follow"
+					};
+
+					fetch("https://api.hiphopboombox.com/api/get/avgViews.php", requestOptions)
+					  	.then((response) => response.json())
+					  	.then((result) => {
+					  		// console.log(result, result != null);
+					  		if (result != null && result.length >= 1) {
+					  			form1.nextElementSibling.style.display = 'block';
+
+					  			const xValues = result.map(entry => entry.date);
+								const avgs = result.map(entry => entry.avg);
+
+							    const ctx = document.getElementById('myChart').getContext('2d');
+
+							    // console.log(myChart);
+
+							    if (myChart) {
+							      	myChart.destroy();
+							    }
+
+								myChart = new Chart(ctx, {
+									type: "line",
+									data: {
+										labels: xValues,
+										datasets: [{
+										    data: avgs,
+										    borderColor: "blue",
+										    fill: false,
+										    borderWidth: 1,
+										}]
+									},
+									options: {}
+								});
+					  		}
+
+					  		else {
+					  			form1.nextElementSibling.style.display = 'none';
+					  		}
+					  	})
+					  	.catch((error) => console.error(error));
+				}
+			})
+        })
+	</script>
+
+<%- include("./includes/end.ejs"); %>
+
+</body>

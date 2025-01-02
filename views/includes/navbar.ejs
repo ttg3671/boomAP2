@@ -1,0 +1,202 @@
+<nav class="navbar navbar-dark bg-dark fixed-top">
+		  <div class="container-fluid">
+		    <a class="navbar-brand" href="/v1/home">BoomBox</a>
+		    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+		      <div class="offcanvas-header">
+		        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Welcome!</h5>
+		        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		      </div>
+		      <div class="offcanvas-body">
+		        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="/v1/home" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-house me-3" style="color: white;"></i>Home
+                </a>
+                <ul class="dropdown-menu bg-transparent ps-5">
+                    <a class="nav-link active" class="btn btn-outline-light" href="/v1/home">Snap Shot</a>
+	                </ul>
+              </li>
+              
+		          <li class="nav-item">
+		            <a class="nav-link active" href="/v1/category">
+		            	<i class="fa-solid fa-list me-3" style="color: white;"></i>Media Category
+		            </a>
+		          </li>
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/newsCategory">
+		            	<i class="fa-solid fa-list me-3" style="color: white;"></i>Blog Category
+		            </a>
+		          </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="/v1/home" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-file-pen me-3" style="color: white;"></i>Media Content
+                </a>
+                <ul class="dropdown-menu bg-transparent ps-5">
+                  <a class="nav-link active" href="/v1/post">
+		            	  <i class="fa-solid fa-table me-3" style="color: white;"></i>- Media List
+		              </a>
+		              <a class="nav-link active" href="/v1/add">
+		            	  <i class="fa-solid fa-plus me-3" style="color: white;"></i>- Add Media
+		              </a>
+	              </ul>
+              </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="/v1/home" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-blog me-3" style="color: white;"></i>Blog Content
+                </a>
+                <ul class="dropdown-menu bg-transparent ps-5">
+                  <a class="nav-link active" href="/v1/blogPost">
+                    <i class="fa-solid fa-table me-3" style="color: white;"></i>- Article List
+                  </a>
+		              <a class="nav-link active" href="/v1/addBlog">
+		            	  <i class="fa-solid fa-plus me-3" style="color: white;"></i>- Add Articles
+		              </a>
+	              
+                    <a class="nav-link active dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-chart-line me-3" style="color: white;"></i>Analytics
+                    </a>
+                    <ul class="dropdown-menu1 bg-transparent ps-5">
+                      <a class="nav-link active" href="/v1/va">
+                        <i class="fa-solid fa-video me-3" style="color: white;"></i>- Videos
+                      </a>
+                    </ul>
+                  
+                </ul>
+              </li>
+              
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/user">
+		            	<i class="fa-solid fa-user-tie me-3" style="color: white;"></i>Users
+		            </a>
+		          </li>
+              
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/poll">
+                  <i class="fa-solid fa-square-poll-vertical me-3" style="color: white;"></i>Poll
+		            </a>
+		          </li>
+              
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/addPoll">
+                  <i class="fa-solid fa-plus me-3" style="color: white;"></i> Add Poll
+		            </a>
+		          </li>
+              
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/fp">
+                  <i class="fa-solid fa-fire-flame-curved me-3" style="color: white;"></i> Footer Popup
+		            </a>
+		          </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-layer-group me-3" style="color: white;"></i>Footer
+                </a>
+                <ul class="dropdown-menu bg-transparent">
+                  <li><a class="nav-link active text-white" href="/v1/footer/1">Terms Of Service</a></li>
+                  <li><a class="nav-link active text-white" href="/v1/footer/2">Privacy Policy</a></li>
+                  <li><a class="nav-link active text-white" href="/v1/footer/3">DMCA</a></li>
+                </ul>
+              </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-circle-exclamation me-3" style="color: white;"></i>Notification
+                </a>
+                <ul class="dropdown-menu bg-transparent">
+                  <li>
+                    <a class="nav-link active text-white" href="/v1/notifyAll">
+                      <i class="fa-solid fa-table me-3" style="color: white;"></i>- List All
+                    </a>
+                  </li>
+                  <li>
+                    <a class="nav-link active text-white" href="/v1/notify">
+                      <i class="fa-solid fa-plus me-3" style="color: white;"></i>- Add Notifications
+                    </a>
+                  </li>
+                </ul>
+		          </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="https://i.ibb.co/3pwdp37/refer.png" alt="refer" border="0" width="20" height="20" class="me-3">Sneaker Raffles
+                </a>
+                <ul class="dropdown-menu bg-transparent">
+                  <li><a class="nav-link active text-white" href="/v1/sneaker_release">- Sneaker releases</a></li>
+                  <li><a class="nav-link active text-white" href="/v1/raffle">- Raffles</a></li>
+                  <li><a class="nav-link active text-white" href="/v1/add_raffle">- Front end sneakers</a></li>
+                </ul>
+              </li>
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-brands fa-adversal me-3" style="color: white;"></i>Advertisement
+                </a>
+                <ul class="dropdown-menu bg-transparent ps-5">
+                  <a class="nav-link active" href="/v1/ads">
+		            	  <i class="fa-solid fa-table me-3" style="color: white;"></i>- Ads List
+		              </a>
+		              <a class="nav-link active" href="/v1/addAds">
+		            	  <i class="fa-solid fa-plus me-3" style="color: white;"></i>- Add Ads
+		              </a>
+                  <a class="nav-link active" href="/v1/showDesktopAds">
+		            	  <i class="fa-solid fa-table me-3" style="color: white;"></i>- List Desktop Ads
+		              </a>
+                  <a class="nav-link active" href="/v1/showMobileAds">
+		            	  <i class="fa-solid fa-table me-3" style="color: white;"></i>- List Mobile Ads
+		              </a>
+                  <a class="nav-link active" href="/v1/desktopAds">
+		            	  <i class="fa-solid fa-plus me-3" style="color: white;"></i>- Add Desktop Ads
+		              </a>
+                  <a class="nav-link active" href="/v1/mobileAds">
+		            	  <i class="fa-solid fa-plus me-3" style="color: white;"></i>- Add Mobile Ads
+		              </a>
+	              </ul>
+              </li>
+
+              <!-- <li class="nav-item dropdown">
+                <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="https://i.ibb.co/3pwdp37/refer.png" alt="refer" border="0" width="20" height="20" class="me-3">Music
+                </a>
+                <ul class="dropdown-menu bg-transparent">
+                  <li><a class="nav-link active text-white" href="/v1/sneaker_release">- List Albums</a></li>
+                  <li><a class="nav-link active text-white" href="/v1/add_single">- Add Albums</a></li>
+                  <li><a class="nav-link active text-white" href="/v1/add_raffle">- Front end sneakers</a></li>
+                </ul>
+              </li>
+              
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/blogPost">
+		            	<i class="fa-solid fa-table me-3" style="color: white;"></i>BLOG
+		            </a>
+		            </li>
+               <li class="nav-item">
+		            <a class="nav-link active" href="/v1/add">
+		            	<i class="fa-solid fa-plus me-3" style="color: white;"></i>Add POST
+		            </a>
+		          </li>
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/addBlog">
+		            	<i class="fa-solid fa-plus me-3" style="color: white;"></i>Add BLOG
+		            </a>
+		          </li>
+              <li class="nav-item">
+		            <a class="nav-link active" href="/v1/va">
+		            	<i class="fa-solid fa-video me-3" style="color: white;"></i>Video Analysis
+		            </a>
+		          </li> -->
+              
+		          <li class="nav-item">
+		            <a class="nav-link active" href="/logout">
+		            	<i class="fa-solid fa-power-off me-3" style="color: white;"></i>Logout
+		            </a>
+		          </li>
+		        </ul>
+		      </div>
+		    </div>
+		  </div>
+		</nav>

@@ -1,0 +1,168 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/post.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <% if (category != '' && path == 'post') { %>
+			        <div class="col-12 text-center post_div1 mb-5">
+			        	<% category.forEach(i => { %>
+			        		<a href="/v1/filter/<%= i.id %>/?type=&name=" type="button" class="btn btn-outline-success"><%= i.name %></a>
+			        	<% }) %>
+			        </div>
+			    	<% } else if (category != '' && path == 'blog') { %>
+			    		<div class="col-12 text-center post_div1 mb-5">
+			        	<% category.forEach(i => { %>
+			        		<a href="/v1/blogFilter/<%= i.id %>/?type=&name=" type="button" class="btn btn-outline-success"><%= i.name %></a>
+			        	<% }) %>
+			        </div>
+			    	<% } %>
+
+		        <div class="col-12 col-lg-12 text-center post_div2 border-0">
+              <form action="<%= path == 'post' ? '/v1/filter/1' : '/v1/blogFilter/1' %>" method="GET" class="d-flex" role="search">
+                <input class="form-control me-2" name="name" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-dark" type="submit">Search</button>
+              </form>
+              
+              <form id="filterForm" method="GET" class="d-flex">
+                <label for="filterSelect" class="form-label" style="color: grey; font-size: 12px;">Filter by Date:</label>
+                <input class="form-control" name="type" type="date" id="filterSelect" value="<%= type != '' ? type : '' %>">
+              </form>
+
+              <!-- <form id="filterForm" method="GET">
+		        		<select id="filterSelect" class="form-select" name="type" aria-label="Default select example">
+                  <option>Filter by Date:</option>
+                  <option value="t">Today</option>
+                  <option value="y">Yesterday</option>
+                </select>
+		        	</form> -->
+		        </div>
+
+		        <% if(showData != '') { %>
+		        	<div class="col-12 col-lg-12 p-3">
+		        		<div class="table-responsive">
+							  	<table class="table">
+							  		<thead>
+									    <tr>
+									      <th scope="col">ID</th>
+									      <th scope="col">Title</th>
+									      <th scope="col">Description</th>
+									      <th scope="col">Social Media</th>
+									      <th scope="col">Date</th>
+									      <th scope="col">Views</th>
+									      <th scope="col"></th>
+									    </tr>
+										</thead>
+										<tbody>
+											<% showData.forEach(i => { %>
+											    <tr>
+											      	<th scope="row"><%= i.id %></th>
+											      	<td class="title"><%= i.title %></td>
+											      	<td class="title"><%= i.des %></td>
+											      	<td class="title1"><%= i.social_media %></td>
+											      	<td><%= i.date %></td>
+											      	<td><%= i.views || '0' %></td>
+											      	<td>
+		                            <a href="<%= path == 'post' ? `/v1/view/${i.id}` : `/v1/viewBlog/${i.id}` %>" type="button" class="btn btn-outline-primary">View</a>
+											      		<a href="<%= path == 'post' ? `/v1/delete/${i.id}` : `/v1/deleteBlog/${i.id}` %>" type="button" class="btn">
+											      			<i class="fa-solid fa-trash" style="color: red;"></i>
+											      		</a>
+											      	</td>
+											    </tr>
+											<% }) %>
+										</tbody>
+							  	</table>
+								</div>
+		        	</div>
+		        <% } %>
+		    </div>
+		</div>
+	</section>
+
+	<footer></footer>
+
+	<script>
+		const path = '<%- path %>';
+	</script>
+
+	<script>
+		window.addEventListener('load', function () {
+	      // console.log("hii...");
+	      // Get the loading spinner element
+	      const loadingSpinner = document.getElementById('loadingSpinner');
+	        
+	      // Hide the loading spinner
+	      loadingSpinner.style.display = 'none';
+	  });
+
+	    globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            const title = document.querySelectorAll('.title');
+            const title1 = document.querySelectorAll('.title1');
+
+           	function truncateText(text) {
+			    const words = text.split(' '); // Split the text into words
+			    if (words.length > 5) {
+			        return words.slice(0, 3).join(' ') + '...'; // Join the first 50 words and add "..."
+			    }
+			    return text; // Return the original text if it's 50 words or less
+			}
+
+			title.forEach(i => {
+				// console.log(i.textContent.trim());
+				i.textContent = truncateText(i.textContent.trim());
+			})
+        
+      title1.forEach(i => {
+        // console.log(i.textContent.trim().split(' ').join(''));
+        i.textContent = truncateText(i.textContent.trim().split(' ').join('').slice(0, 15)+'...');
+      })
+
+			const filterSelect = document.getElementById("filterSelect");
+
+			const filterForm = document.getElementById("filterForm");
+
+			filterSelect.addEventListener('change', (e) => {
+        // console.log(e.target.value);
+				const selectedValue = e.target.value;
+				if (selectedValue) {
+					// console.log(selectedValue);
+					if (path == 'post') {
+						filterForm.action = `/v1/filter/1?type=${selectedValue}`;
+						filterForm.submit();
+					}
+					else if (path == 'blog') {
+						filterForm.action = `/v1/blogFilter/1?type=${selectedValue}`;
+						filterForm.submit();
+					}
+				}
+			})
+        })
+	</script>
+
+<%- include("./includes/end.ejs"); %>
+
+</body>

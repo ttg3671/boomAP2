@@ -1,0 +1,215 @@
+<%- include("./includes/head.ejs"); %>
+
+<link rel="stylesheet" href="/post.css">
+
+<body>
+	<header>
+		<%- include("./includes/navbar.ejs"); %>
+	</header>
+
+	<div class="loading-spinner" id="loadingSpinner">
+	    <img src="https://i.ibb.co/PTLFqC0/cube.png" alt="Your Logo" class="logoSp">
+	    <div class="spinner"></div>
+	</div>
+
+	<section>
+		<div class="container-fluid border-0 p-0" style="margin-top: 80px;">
+			<div class="row justify-content-center">
+		        <div class="col-12 text-center">
+		          	<% if(errorMessage) { %>
+		            	<div class="alert alert-danger" role="alert"><%= errorMessage %></div>
+		          	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 col-lg-12 text-center mb-3">
+		        	<h3>USERS</h3>
+		        </div>
+
+		        <div class="col-12 col-sm-12 col-lg-12 text-center post_div2 border-0">
+		        	<form action="/v1/search" method="GET" class="d-flex" role="search">
+		                <input class="form-control me-2" name="name" type="search" placeholder="Search" aria-label="Search">
+		                <button class="btn btn-outline-dark" type="submit">Search</button>
+		            </form>
+		              
+		            <form id="filterForm" method="GET" class="d-flex">
+		            	<%
+		            		let formattedDate = '';
+		            		if (type != '') {
+		            			const date = new Date(type);
+								const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+        						// Format the date as YYYY-MM-DD
+        						formattedDate = localDate.toISOString().split('T')[0];
+							}
+							else {
+								formattedDate = ''
+							}
+		            	%>
+		                <label for="filterSelect" class="form-label" style="color: grey; font-size: 12px;">Filter by Date:</label>
+		                <input class="form-control" name="type" type="date" id="filterSelect" value="<%= formattedDate %>">
+		            </form>
+		        </div>
+
+		        <div class="col-12 col-sm-12 col-lg-12 mt-5 mb-5 ms-4">
+		        	<% if(showData != '') {%>
+		        		<table class="table table-striped table-hover table-responsive">
+						  	<thead class="table-dark">
+							    <tr>
+							      <th scope="col">#</th>
+							      <th scope="col">Name</th>
+							      <th scope="col">Email</th>
+							      <th scope="col">IP Address</th>
+							      <th scope="col">Country</th>
+							      <th scope="col">Range</th>
+							    </tr>
+						  	</thead>
+						  	<tbody>
+						  		<% showData.forEach((i, index) => { %>
+								    <tr>
+								      	<th scope="row"><%= index+1 %></th>
+								      	<td><%= i.name %></td>
+								      	<td><%= i.email %></td>
+								      	<td><%= i.ip_address %></td>
+								      	<td><%= i?.country ? i?.country : '-' %></td>
+								      	<td><%= i?.range ? i?.range : '-' %></td>
+								    </tr>
+								<% }) %>
+						  	</tbody>
+						</table>
+		        	<% } %>
+		        </div>
+
+		        <div class="col-12 col-sm-12 col-lg-10">
+		        	<nav aria-label="Page navigation example">
+				        <ul class="pagination justify-content-center" id="pagination">
+				            <li class="page-item">
+				                <a class="page-link" href="#" id="prevPage">Previous</a>
+				            </li>
+				            <!-- Page numbers will be dynamically inserted here -->
+				            <li class="page-item">
+				                <a class="page-link" href="#" id="nextPage">Next</a>
+				            </li>
+				        </ul>
+				    </nav>
+		        </div>
+		    </div>
+		</div>
+	</section>
+
+	<section>
+		<div class="container" style="height: 100px;"></div>
+	</section>
+
+	<script>
+		let count = '<%= count %>';
+		let cp = '<%= cp %>';
+	</script>
+
+	<script>
+	    const loadingSpinner = document.getElementById('loadingSpinner');
+
+	    setTimeout(function() {
+            if (loadingSpinner) {
+              loadingSpinner.style.display = 'none';
+            }
+        }, 3000);
+
+        globalThis.document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                const alertElement = document.querySelector('.alert-danger');
+                if (alertElement) {
+                    alertElement.style.display = 'none';
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            const filterSelect = document.getElementById("filterSelect");
+
+			const filterForm = document.getElementById("filterForm");
+
+			filterSelect.addEventListener('change', (e) => {
+		        // console.log(e.target.value);
+				const selectedValue = e.target.value;
+				if (selectedValue) {
+					// console.log(selectedValue);
+					filterForm.action = `/v1/search?type=${selectedValue}`;
+					filterForm.submit();
+				}
+			})
+
+            const paginationContainer = document.getElementById('pagination');
+            const totalPages = Number(count); // Set this to your total page count
+            const maxVisiblePages = 5; // Number of pages to show around the current page
+            let currentPage = Number(cp);
+
+            const renderPagination = () => {
+                paginationContainer.innerHTML = '';
+
+                // Previous button
+                const prevButton = document.createElement('li');
+                prevButton.className = 'page-item';
+                prevButton.innerHTML = `<a class="page-link" href="#" id="prevPage">Previous</a>`;
+                paginationContainer.appendChild(prevButton);
+
+                // Calculate page range to show
+                const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                const endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
+
+                // Add page number links
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageItem = document.createElement('li');
+                    pageItem.className = 'page-item';
+                    const pageLink = document.createElement('a');
+                    pageLink.className = `page-link ${i === currentPage ? 'active' : ''}`;
+                    pageLink.href = `/v1/user/?page=${i}`;
+                    pageLink.textContent = i;
+                    pageLink.dataset.page = i;
+                    pageItem.appendChild(pageLink);
+                    paginationContainer.appendChild(pageItem);
+                }
+
+                // Next button
+                const nextButton = document.createElement('li');
+                nextButton.className = 'page-item';
+                nextButton.innerHTML = `<a class="page-link" href="#" id="nextPage">Next</a>`;
+                paginationContainer.appendChild(nextButton);
+
+                // Update button states
+                document.getElementById('prevPage').parentElement.classList.toggle('disabled', currentPage === 1);
+                document.getElementById('nextPage').parentElement.classList.toggle('disabled', currentPage === totalPages);
+            };
+
+            const changePage = (newPage) => {
+                if (newPage < 1 || newPage > totalPages) return;
+                currentPage = newPage;
+                renderPagination();
+            };
+
+            // Event delegation for page links
+            paginationContainer.addEventListener('click', (event) => {
+                //if (event.target.classList.contains('page-link')) {
+                //    event.preventDefault();
+                //    const page = parseInt(event.target.dataset.page);
+                //    console.log(page, page != NaN, event.target);
+                //    if (page != NaN) {
+                //    	event.target.setAttribute('href', `/v1/user/${page}`);
+                //    }
+                //} 
+                if (event.target.id === 'prevPage') {
+                    event.preventDefault();
+                    // console.log("prev btn");
+                    changePage(currentPage - 1);
+                } if (event.target.id === 'nextPage') {
+                    event.preventDefault();
+                    // console.log("next btn");
+                    changePage(currentPage + 1);
+                }
+            });
+
+            // Initial render
+            renderPagination();
+        })
+	</script>
+
+<%- include("./includes/end.ejs"); %>
+
+</body>
